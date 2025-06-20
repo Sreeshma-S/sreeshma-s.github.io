@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Accounts Receivable vs Payable</title>
+</head>
+<body>
+  <div id="piechart" style="width: 100%; height: 300px;"></div>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Account Type', 'Amount'],
+        ['Accounts Receivable', 15000],
+        ['Accounts Payable',  9000]
+      ]);
+
+      var options = {
+        title: 'Accounts Receivable vs Payable'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+
+      // Optional: Add interactivity to show details on click/tap
+      google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection();
+        if (selection.length) {
+          var item = selection[0];
+          var value = data.getValue(item.row, 1);
+          alert('Selected: ' + data.getValue(item.row, 0) + ', Value: ' + value);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
