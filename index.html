@@ -16,16 +16,78 @@
 
     function drawChart() {
       // Transaction details for each account type
-      const receivablesTooltip = `
-<b>Accounts Receivable</b><br>
-- Invoice #INV001: 5000<br>
-- Invoice #INV002: 7000<br>
-- Invoice #INV003: 3000`;
+      const foodTooltip = `
+      <div style="padding: 8px;">
+        <b>Food</b><br>
+        Saranga brunch – 83<br>
+        Tea – 9.5<br>
+        Tea – 4<br>
+        Tea – 3<br>
+        Tea – 1.5<br>
+        Tea – 5<br>
+        Dinner – 28<br>
+        Snacks – 10<br>
+        Breakfast – 10<br>
+        Lunch – 17<br>
+        Julien brunch – 14<br>
+        Dinner – 21<br>
+        Chicken – 60<br>
+        Haridwar lunch - ?
+      </div>`;
 
-      const payablesTooltip = `
-<b>Accounts Payable</b><br>
-- Bill #BILL001: 4000<br>
-- Bill #BILL002: 5000`;
+      const groceryTooltip = `
+      <div style="padding: 8px;">
+        <b>Grocery</b><br>
+        Grocery – 25.92<br>
+        Grocery – 32<br>
+        Day 2 day – 14.98<br>
+        Grocery – 15.55<br>
+        Grocery – 8.7<br>
+        Gala – 58<br>
+        Gala – 7.63<br>
+      </div>`;
+
+      const savingsTooltip = `
+      <div style="padding: 8px;">
+        <b>Savings</b><br>
+        National bond – 500<br>
+        Scheme - 770<br>
+        RD - 100
+      </div>`;
+
+      const otherTooltip = `
+      <div style="padding: 8px;">
+        <b>Others</b><br>
+        Petrol – 121<br>
+        Household – 87<br>
+        Parking – 8<br>
+        Doc – 18<br>
+        Mobile top up – 50<br>
+        Lin – 98<br>
+        Earring – 12<br>
+        Earring – 29<br>
+        Shorts – 25<br>
+        Bag – 149<br>
+        Air purifier – 238<br>
+        Car wash – 110
+      </div>`;
+
+      const fixedTooltip = `
+      <div style="padding: 8px;">
+        <b>Fixed Expenses</b><br>
+        Rent – 2600<br>
+        WiFi - 208<br>
+        Du - 100<br>
+        Home - 500<br>
+        EB - 300
+      </div>`;
+
+      const incomeTooltip = `
+      <div style="padding: 8px;">
+        <b>Income</b><br>
+        FZ – 8000<br>
+        DA - 3000
+      </div>`;
 
       const data = new google.visualization.DataTable();
       data.addColumn('string', 'Account Type');
@@ -33,12 +95,16 @@
       data.addColumn({type: 'string', role: 'tooltip', p: {html: true}});
 
       data.addRows([
-        ['Accounts Receivable', 15000, receivablesTooltip],
-        ['Accounts Payable', 9000, payablesTooltip]
+        ['Food', 266, foodTooltip],
+        ['Grocery', 162.78, groceryTooltip],
+        ['Savings', 1370.00, savingsTooltip],
+        ['Other', 1445.00, otherTooltip],
+        ['Fixed Expenses', 3708.00, fixedTooltip],
+        ['Income', 11000, incomeTooltip]
       ]);
 
       const options = {
-        title: 'Accounts Receivable vs Payable',
+        title: 'Transactions',
         tooltip: { isHtml: true }
       };
 
