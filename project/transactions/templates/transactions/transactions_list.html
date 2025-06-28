@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Transactions</title></head>
+<body>
+<h1>Transactions List</h1>
+<ul>
+  {% for t in transactions %}
+    <li>{{ t.created_at }} - AED {{ t.amount }} - {{ t.description }}</li>
+  {% empty %}
+    <li>No transactions found.</li>
+  {% endfor %}
+</ul>
+</body>
+</html>

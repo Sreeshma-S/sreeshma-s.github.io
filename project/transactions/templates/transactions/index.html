@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Monthly Transactions</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    .google-visualization-tooltip { white-space: pre-line; }
+
+    body {
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    #transaction-detail {
+      flex: 1 1 300px;
+      max-width: 420px;
+      background: #f7f7f7; /* light grey background */
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      padding: 20px 25px;
+      color: #333333; /* dark grey text */
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    #transaction-detail h2 {
+      margin-top: 0;
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 16px;
+      color: #222222; /* darker grey heading */
+    }
+
+    #transaction-detail label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #555555; /* medium grey label */
+    }
+
+    #transaction-detail input[type="text"],
+    #transaction-detail input[type="number"] {
+      width: 100%;
+      padding: 10px 14px;
+      margin-top: 6px;
+      border: 1.8px solid #cccccc; /* soft grey border */
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      outline-offset: 2px;
+      box-sizing: border-box;
+      background: #fafafa; /* very light grey background */
+      color: #333333;
+    }
+
+    #transaction-detail input[type="text"]:focus,
+    #transaction-detail input[type="number"]:focus {
+      border-color: #888888; /* darker grey focus border */
+      box-shadow: 0 0 8px rgba(136, 136, 136, 0.4);
+      background: #ffffff; /* white background on focus */
+    }
+
+    #transaction-detail button {
+      margin-top: 22px;
+      padding: 12px 26px;
+      background: #222831; /* medium dark grey button */
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(102, 102, 102, 0.6);
+      transition: background 0.3s ease;
+    }
+
+    #transaction-detail button:hover {
+      background: black; /* darker grey on hover */
+    }
+
+
+
+    /* Pie chart container and heading */
+    #piechart-container {
+      flex: 1 1 700px;
+      background-color: #e0e0e0;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      min-width: 300px;
+      /* Let height be automatic */
+    }
+
+    .chart-heading {
+      margin: 0 0 15px 0;
+      font-weight: 700;
+      color: #6b4c3b;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    #piechart {
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container">
+    <!-- Transaction input card -->
+    <div id="transaction-detail">
+      <h2>Transaction Detail</h2>
+      <label for="amount">Amount (AED):</label>
+      <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" min="0">
+
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" placeholder="Enter description">
+
+      <button type="button" onclick="submitTransaction()">Submit</button>
+    </div>
+
+    <!-- Pie chart container with heading -->
+    <div id="piechart-container">
+      <h2 class="chart-heading">June 25 - July 25</h2>
+      <div id="piechart"></div>
+    </div>
+  </div>
+
+  <script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    const foodTooltip = `
+      <div style="padding: 8px;">
+        <b>Food</b><br>
+        Saranga brunch – 83<br>
+        Tea – 9.5<br>
+        Tea – 4<br>
+        Tea – 3<br>
+        Tea – 1.5<br>
+        Tea – 5<br>
+        Dinner – 28<br>
+        Snacks – 10<br>
+        Breakfast – 10<br>
+        Lunch – 17<br>
+        Julien brunch – 14<br>
+        Dinner – 21<br>
+        Chicken – 60<br>
+        Haridwar lunch - ?
+      </div>`;
+
+    const groceryTooltip = `
+      <div style="padding: 8px;">
+        <b>Grocery</b><br>
+        Grocery – 25.92<br>
+        Grocery – 32<br>
+        Day 2 day – 14.98<br>
+        Grocery – 15.55<br>
+        Grocery – 8.7<br>
+        Gala – 58<br>
+        Gala – 7.63<br>
+      </div>`;
+
+    const savingsTooltip = `
+      <div style="padding: 8px;">
+        <b>Savings</b><br>
+        National bond – 500<br>
+        Scheme - 770<br>
+        RD - 100
+      </div>`;
+
+    const otherTooltip = `
+      <div style="padding: 8px;">
+        <b>Others</b><br>
+        Petrol – 121<br>
+        Household – 87<br>
+        Parking – 8<br>
+        Doc – 18<br>
+        Mobile top up – 50<br>
+        Lin – 98<br>
+        Earring – 12<br>
+        Earring – 29<br>
+        Shorts – 25<br>
+        Bag – 149<br>
+        Air purifier – 238<br>
+        Car wash – 110
+      </div>`;
+
+    const fixedTooltip = `
+      <div style="padding: 8px;">
+        <b>Fixed Expenses</b><br>
+        Rent – 2600<br>
+        WiFi - 208<br>
+        Du - 100<br>
+        Home - 500<br>
+        EB - 300
+      </div>`;
+
+    const incomeTooltip = `
+      <div style="padding: 8px;">
+        <b>Income</b><br>
+        FZ – 8000<br>
+        DA - 3000
+      </div>`;
+
+    function drawChart() {
+      const data = new google.visualization.DataTable();
+      data.addColumn('string', 'Account Type');
+      data.addColumn('number', 'Amount');
+      data.addColumn({type: 'string', role: 'tooltip', p: {html: true}});
+
+      data.addRows([
+        ['Food: 266 AED', 266, foodTooltip],
+        ['Grocery: 162.78 AED', 162.78, groceryTooltip],
+        ['Savings: 1370.00 AED', 1370.00, savingsTooltip],
+        ['Other: 1445.00 AED', 1445.00, otherTooltip],
+        ['Fixed Expenses: 3708.00 AED', 3708.00, fixedTooltip],
+        ['Income: 11000 AED', 11000, incomeTooltip]
+      ]);
+
+      const options = {
+        title: 'Transactions',
+        tooltip: { isHtml: true },
+        legend: {
+          position: 'right',
+          alignment: 'center',
+          textStyle: {
+            fontSize: 12,     // smaller font
+            // maxLines: 1     // *not supported by pie chart legend sadly*
+          },
+        },
+        chartArea: {
+          left: 20,
+          top: 20,
+          width: '65%',       // increase width for pie slices
+          height: '80%',
+        },
+        pieSliceText: 'percentage',
+      };
+
+      const chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+    }
+
+    function submitTransaction() {
+      const amountInput = document.getElementById('amount');
+      const descriptionInput = document.getElementById('description');
+      const amount = parseFloat(amountInput.value);
+      const description = descriptionInput.value.trim();
+
+      if (isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid positive amount.');
+        return;
+      }
+      if (!description) {
+        alert('Please enter a description.');
+        return;
+      }
+
+      fetch('/add_transaction/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, description })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Transaction saved successfully!');
+          amountInput.value = '';
+          descriptionInput.value = '';
+        } else {
+          alert('Failed to save transaction: ' + data.error);
+        }
+      })
+      .catch(err => {
+        alert('Error connecting to server.');
+        console.error(err);
+      });
+
+    }
+  </script>
+
+</body>
+</html>
